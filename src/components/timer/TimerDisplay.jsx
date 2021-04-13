@@ -1,13 +1,16 @@
 import React from 'react'
 import { number } from 'prop-types'
-
 import { formatTime } from '../../utils'
+
+import classes from './TimerDisplay.module.css'
 
 const TimerDisplay = ({ seconds }) => {
 
 	const time = formatTime(seconds)
 
-	return <>{time}</>
+	return <section className={classes.container}>
+		<p>{time}</p>
+	</section>
 }
 
 TimerDisplay.propTypes = {

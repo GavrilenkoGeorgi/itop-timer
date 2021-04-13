@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { interval } from 'rxjs'
 import { useObservable } from '../../hooks/useObservable'
 
+import classes from './Timer.module.css'
 import TimerDisplay from './TimerDisplay'
 
 const interval$ = interval(1000)
@@ -9,7 +10,7 @@ const interval$ = interval(1000)
 const Timer = () => {
 
 	const tick = useObservable(interval$)
-	const [ elapsed, setElapsed ] = useState({ seconds: 0 }) // seconds
+	const [ elapsed, setElapsed ] = useState({ seconds: 0 })
 	const [ running, setRunning ] = useState(false)
 	const [ waiting, setWaiting ] = useState(false)
 
@@ -31,20 +32,28 @@ const Timer = () => {
 			setWaiting(false)
 			setRunning(true)
 		} else setRunning(!running)
-
 	}
 
 	const reset = () => {
 		setElapsed(curr => ({ ...curr, seconds: 0 }))
 	}
 
-	return <>
+	return <section className={classes.container}>
 		<TimerDisplay seconds={elapsed.seconds} />
-		<br />
-		<button onClick={toggleStartStop}>{running && !waiting ? 'stop' : 'start'}</button>
-		<button disabled={!running} onClick={toggleWait}>{waiting ? 'resume' : 'wait'}</button>
-		<button onClick={reset}>reset</button>
-	</>
+		<div className={classes.btnContainer}>
+			<button onClick={toggleStartStop}>
+				{running && !waiting ? 'stop' : 'start'}
+			</button>
+			<button onClick={toggleWait} disabled={!running} >
+				{waiting ? 'resume' : 'wait'}
+			</button>
+			<button onClick={reset}>
+				reset
+			</button>
+		</div>
+	</section>
 }
 
-export default Timer
+const MemoTimer = React.memo(Timer)
+
+export default MemoTimer
