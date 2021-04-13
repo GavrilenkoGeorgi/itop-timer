@@ -1,0 +1,1 @@
+export { children } from './propTypes'
