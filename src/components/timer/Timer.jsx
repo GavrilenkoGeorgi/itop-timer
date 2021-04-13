@@ -14,17 +14,24 @@ const Timer = () => {
 	const [ running, setRunning ] = useState(false)
 	const [ waiting, setWaiting ] = useState(false)
 
+	const [ lastClick, setLastClick ] = useState(0)
+
 	useEffect(() => {
+
 		if (running && waiting) return
-		if (running) {
+		if (running)
 			setElapsed(curr => ({ ...curr, seconds: curr.seconds++ }))
-		} else if (!running && !waiting) {
+		else if (!running && !waiting)
 			setElapsed(curr => ({ ...curr, seconds: 0 }))
-		}
+
 	}, [ tick, running, waiting ])
 
-	const toggleWait = () => {
-		setWaiting(!waiting)
+	const toggleWait = ({ timeStamp }) => {
+		setLastClick(() => timeStamp)
+
+		if (waiting) setWaiting(!waiting)
+		else if (timeStamp - lastClick <= 300) //ms
+			setWaiting(!waiting)
 	}
 
 	const toggleStartStop = () => {
@@ -36,6 +43,7 @@ const Timer = () => {
 
 	const reset = () => {
 		setElapsed(curr => ({ ...curr, seconds: 0 }))
+		setWaiting(false)
 	}
 
 	return <section className={classes.container}>
@@ -44,7 +52,7 @@ const Timer = () => {
 			<button onClick={toggleStartStop}>
 				{running && !waiting ? 'stop' : 'start'}
 			</button>
-			<button onClick={toggleWait} disabled={!running} >
+			<button onClick={event => toggleWait(event)} disabled={!running} >
 				{waiting ? 'resume' : 'wait'}
 			</button>
 			<button onClick={reset}>
